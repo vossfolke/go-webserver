@@ -21,14 +21,21 @@ func middlewareCors(next http.Handler) http.Handler {
 
 func handlerReadiness(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("OK"))
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	} else {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	}
 }
-
 
 func main() {
 	const port = "8080"
 	const filepathRoot = "."
+
+	apiCfg := apiConfig{
+		fileserverHits: 0,
+	}
 
 	mux := http.NewServeMux()
 
@@ -38,8 +45,10 @@ func main() {
 		Addr:    ":" + port,
 		Handler: corsMux,
 	}
-	mux.Handle("/app/*", http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot))))
-	mux.HandleFunc("/healthz", handlerReadiness)
+	mux.Handle("/app/*", apiCfg.middlewareMetricsInc(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot)))))
+	mux.HandleFunc("GET /healthz", handlerReadiness)
+	mux.HandleFunc("GET /metrics", apiCfg.handlerMetrics)
+	mux.HandleFunc("/reset", apiCfg.handlerReset)
 
 	fmt.Println("server starts on port 8080...")
 	log.Fatal(srv.ListenAndServe())
