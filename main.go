@@ -19,16 +19,6 @@ func middlewareCors(next http.Handler) http.Handler {
 	})
 }
 
-func handlerReadiness(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "text/plain; charset=utf-8")
-	if r.Method != "GET" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-	} else {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
-	}
-}
-
 func main() {
 	const port = "8080"
 	const filepathRoot = "."
@@ -49,6 +39,7 @@ func main() {
 	mux.HandleFunc("GET /api/healthz", handlerReadiness)
 	mux.HandleFunc("GET /admin/metrics", apiCfg.handlerMetrics)
 	mux.HandleFunc("/api/reset", apiCfg.handlerReset)
+	mux.HandleFunc("POST /api/validate_chirp", handlerChirpsValidate)
 
 	fmt.Println("server starts on port 8080...")
 	log.Fatal(srv.ListenAndServe())
