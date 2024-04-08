@@ -46,9 +46,9 @@ func main() {
 		Handler: corsMux,
 	}
 	mux.Handle("/app/*", apiCfg.middlewareMetricsInc(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot)))))
-	mux.HandleFunc("GET /healthz", handlerReadiness)
-	mux.HandleFunc("GET /metrics", apiCfg.handlerMetrics)
-	mux.HandleFunc("/reset", apiCfg.handlerReset)
+	mux.HandleFunc("GET /api/healthz", handlerReadiness)
+	mux.HandleFunc("GET /admin/metrics", apiCfg.handlerMetrics)
+	mux.HandleFunc("/api/reset", apiCfg.handlerReset)
 
 	fmt.Println("server starts on port 8080...")
 	log.Fatal(srv.ListenAndServe())
