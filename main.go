@@ -30,6 +30,8 @@ func main() {
 	mux := http.NewServeMux()
 
 	corsMux := middlewareCors(mux)
+	IdCounter := Counter{}
+	IdCounter.NewCounter()
 
 	srv := &http.Server{
 		Addr:    ":" + port,
@@ -39,7 +41,7 @@ func main() {
 	mux.HandleFunc("GET /api/healthz", handlerReadiness)
 	mux.HandleFunc("GET /admin/metrics", apiCfg.handlerMetrics)
 	mux.HandleFunc("/api/reset", apiCfg.handlerReset)
-	mux.HandleFunc("POST /api/validate_chirp", handlerChirpsValidate)
+	mux.HandleFunc("POST /api/chirps", handlerChirp)
 
 	fmt.Println("server starts on port 8080...")
 	log.Fatal(srv.ListenAndServe())
