@@ -3,10 +3,13 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/vossfolke/go-webserver/internal/database"
 )
 
 type apiConfig struct {
 	fileserverHits int
+	DB             *database.DB
 }
 
 func (cfg *apiConfig) middlewareMetricsInc(next http.Handler) http.Handler {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/vossfolke/go-webserver/internal/database"
 )
 
 func middlewareCors(next http.Handler) http.Handler {
@@ -23,15 +25,19 @@ func main() {
 	const port = "8080"
 	const filepathRoot = "."
 
+	db, err := database.NewDB("database.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	apiCfg := apiConfig{
 		fileserverHits: 0,
+		DB:             db,
 	}
 
 	mux := http.NewServeMux()
 
 	corsMux := middlewareCors(mux)
-	IdCounter := Counter{}
-	IdCounter.NewCounter()
 
 	srv := &http.Server{
 		Addr:    ":" + port,
