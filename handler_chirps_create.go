@@ -5,11 +5,9 @@ import (
 	"errors"
 	"net/http"
 	"strings"
-
-	"github.com/vossfolke/go-webserver/internal/database"
 )
 
-type chirp struct {
+type Chirp struct {
 	ID   int    `json:"id"`
 	Body string `json:"body"`
 }
@@ -41,8 +39,7 @@ func (cfg *apiConfig) handlerChirpsCreate(w http.ResponseWriter, r *http.Request
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create chirp")
 		return
 	}
-
-	respondWithJSON(w, http.StatusCreated, chirp{ID: chirp.ID, Body: chirp.Body})
+	respondWithJSON(w, http.StatusCreated, Chirp{ID: chirp.ID, Body: chirp.Body})
 }
 
 func validateChirp(msg string) (string, error) {

@@ -47,7 +47,7 @@ func main() {
 	mux.HandleFunc("GET /api/healthz", handlerReadiness)
 	mux.HandleFunc("GET /admin/metrics", apiCfg.handlerMetrics)
 	mux.HandleFunc("/api/reset", apiCfg.handlerReset)
-	mux.HandleFunc("POST /api/chirps", handlerChirp)
+	mux.HandleFunc("POST /api/chirps", apiCfg.handlerChirpsCreate)
 
 	fmt.Println("server starts on port 8080...")
 	log.Fatal(srv.ListenAndServe())
